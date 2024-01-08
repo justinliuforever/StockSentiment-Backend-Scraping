@@ -1,0 +1,28 @@
+{
+  "name": "backend_scraping",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justinliuforever/StockSentiment-Backend-Scraping.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justinliuforever/StockSentiment-Backend-Scraping/issues"
+  },
+  "homepage": "https://github.com/justinliuforever/StockSentiment-Backend-Scraping#readme",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3",
+    "openai": "^4.24.1",
+    "puppeteer": "^21.7.0"
+  }
+}
