@@ -67,11 +67,21 @@ app.get('/', (req, res) => {
   res.json({ message: 'Stock Analysis Scraper Running', status: 'active' });
 });
 
-// Start the HTTP server
+// // Start the HTTP server
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+//   // Run your periodic tasks here to ensure they start after the server is up
+//   setInterval(periodicTask, 70000 * 60 * 3);
+//   setInterval(fetchAndProcessNewsData, 60000 * 60 * 3);
+//   periodicTask(); // Run the task immediately on startup
+// });
+
+
+
+// Start the HTTP server (not using setInterval, loop through tickers)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   // Run your periodic tasks here to ensure they start after the server is up
-  setInterval(periodicTask, 70000 * 60 * 3);
-  setInterval(fetchAndProcessNewsData, 60000 * 60 * 3);
   periodicTask(); // Run the task immediately on startup
+  setTimeout(fetchAndProcessNewsData, 600000); // Schedule fetchAndProcessNewsData to run after 10 minutes
 });
