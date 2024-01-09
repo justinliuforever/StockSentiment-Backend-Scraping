@@ -8,6 +8,8 @@ dotenv.config();
 
 // Define BASE_URL
 const BASE_URL = process.env.STOCK_ANALYSIS_BACKEND_URL || 'http://localhost:5555';
+console.log('start...');
+console.log('BASE_URL:', BASE_URL);
 
 const limit = 5;
 
@@ -65,7 +67,7 @@ async function periodicTask() {
 // Schedule the task to run
 // 1 minute = 60000 milliseconds
 
-setInterval(periodicTask, 60000 * 60 * 3);
+setInterval(periodicTask, 70000 * 60 * 3);
 
 // This is for scraping Content and askChatGPT, and then updating the database
 setInterval(fetchAndProcessNewsData, 60000 * 60 * 3);
