@@ -1,10 +1,15 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import express from 'express';
 import fetchAndProcessNewsData from './addNewsArticles.js';
 import getStockNewsData from './getStockNewsData.js';
 import scrapeNewsPolygon from './scrapingNewsPolygon.js';
 import { tickers } from './constants.js';
+
 dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000; // Use Render's PORT environment variable
 
 // Define BASE_URL
 const BASE_URL = process.env.STOCK_ANALYSIS_BACKEND_URL || 'http://localhost:5555';
@@ -30,12 +35,10 @@ async function postNewStockInfo(article) {
   }
 }
 
-// Function to compare and update new data
 async function compareAndUpdate(news, ticker) {
   console.log('Comparing and updating for ticker:', ticker);
   try {
     const mongoData = await getStockNewsData(ticker, "2023-11-01", tomorrow);
-    //console.log('MongoDB data:', mongoData);
     const newArticles = news.filter(article =>
       !mongoData.some(mongoArticle => mongoArticle.title === article.title)
     );
@@ -46,16 +49,12 @@ async function compareAndUpdate(news, ticker) {
   }
 }
 
-// Function to run periodically for each ticker
 async function periodicTask() {
   for (const ticker of tickers) {
     try {
       const news = await scrapeNewsPolygon(ticker, limit);
       if (news) {
         console.log(`News for ${ticker}:`);
-        // news.forEach(article => {
-        //   console.log(JSON.stringify(article, null, 2));
-        // });
         await compareAndUpdate(news, ticker);
       }
     } catch (error) {
@@ -64,13 +63,15 @@ async function periodicTask() {
   }
 }
 
-// Schedule the task to run
-// 1 minute = 60000 milliseconds
+app.get('/', (req, res) => {
+  res.json({ message: 'Stock Analysis Scraper Running', status: 'active' });
+});
 
-setInterval(periodicTask, 70000 * 60 * 3);
-
-// This is for scraping Content and askChatGPT, and then updating the database
-setInterval(fetchAndProcessNewsData, 60000 * 60 * 3);
-
-// Run the task immediately on startup
-periodicTask();
+// Start the HTTP server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  // Run your periodic tasks here to ensure they start after the server is up
+  setInterval(periodicTask, 70000 * 60 * 3);
+  setInterval(fetchAndProcessNewsData, 60000 * 60 * 3);
+  periodicTask(); // Run the task immediately on startup
+});
