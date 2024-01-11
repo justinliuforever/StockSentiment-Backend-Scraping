@@ -8,8 +8,8 @@ import { tickers } from './constants.js';
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 3000; // Use Render's PORT environment variable
+// const app = express();
+// const PORT = process.env.PORT || 3000; // Use Render's PORT environment variable
 
 // Define BASE_URL
 const BASE_URL = process.env.STOCK_ANALYSIS_BACKEND_URL || 'http://localhost:5555';
@@ -23,6 +23,7 @@ function formatDate(date) {
 }
 
 const today = formatDate(new Date());
+const yesterday = formatDate(new Date(new Date().getTime() - (24 * 60 * 60 * 1000)));
 const tomorrow = formatDate(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)));
 
 async function postNewStockInfo(article) {
@@ -38,11 +39,13 @@ async function postNewStockInfo(article) {
 async function compareAndUpdate(news, ticker) {
   console.log('Comparing and updating for ticker:', ticker);
   try {
-    const mongoData = await getStockNewsData(ticker, "2023-11-01", tomorrow);
+    const mongoData = await getStockNewsData(ticker, yesterday, tomorrow);
     const newArticles = news.filter(article =>
       !mongoData.some(mongoArticle => mongoArticle.title === article.title)
     );
-    console.log('New articles:', newArticles);
+    //console.log('New articles:', newArticles);
+    console.log('New articles:', newArticles.length);
+    
     newArticles.forEach(postNewStockInfo);
   } catch (error) {
     console.error('Error in compareAndUpdate:', error);
@@ -63,9 +66,9 @@ async function periodicTask() {
   }
 }
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Stock Analysis Scraper Running', status: 'active' });
-});
+// app.get('/', (req, res) => {
+//   res.json({ message: 'Stock Analysis Scraper Running', status: 'active' });
+// });
 
 // // Start the HTTP server
 // app.listen(PORT, () => {
@@ -78,10 +81,5 @@ app.get('/', (req, res) => {
 
 
 
-// Start the HTTP server (not using setInterval, loop through tickers)
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  // Run your periodic tasks here to ensure they start after the server is up
-  periodicTask(); // Run the task immediately on startup
-  setTimeout(fetchAndProcessNewsData, 600000); // Schedule fetchAndProcessNewsData to run after 10 minutes
-});
+periodicTask(); // Run the task immediately on startup
+setTimeout(fetchAndProcessNewsData, 60000 * 5); // Schedule fetchAndProcessNewsData to run after 5 minutes
