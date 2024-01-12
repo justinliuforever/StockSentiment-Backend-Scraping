@@ -23,7 +23,7 @@ function formatDate(date) {
 }
 
 const today = formatDate(new Date());
-const yesterday = formatDate(new Date(new Date().getTime() - (24 * 60 * 60 * 1000)));
+const yesterday = formatDate(new Date(new Date().getTime() - 5*(24 * 60 * 60 * 1000)));
 const tomorrow = formatDate(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)));
 
 async function postNewStockInfo(article) {
