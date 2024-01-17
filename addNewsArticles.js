@@ -12,9 +12,17 @@ const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 // BASE_URL is set to the Render service URL in production and defaults to localhost for local development.
 const BASE_URL = process.env.STOCK_ANALYSIS_BACKEND_URL || 'http://localhost:5555';
 
+function formatDate(date) {
+    return date.toISOString().split('T')[0];
+  }
+  
+  const today = formatDate(new Date());
+  const yesterday = formatDate(new Date(new Date().getTime() - 5*(24 * 60 * 60 * 1000)));
+  const tomorrow = formatDate(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)));
+
 async function fetchAndProcessNewsData() {
     for (const ticker of tickers) {
-        const newsData = await getStockNewsData(ticker, "2023-11-01", "2024-11-01");
+        const newsData = await getStockNewsData(ticker, yesterday, tomorrow);
 
         for (const article of newsData) {
             if (newsCompanyName.includes(article.name) && article.content === "empty") {

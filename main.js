@@ -16,7 +16,7 @@ const BASE_URL = process.env.STOCK_ANALYSIS_BACKEND_URL || 'http://localhost:555
 console.log('start...');
 console.log('BASE_URL:', BASE_URL);
 
-const limit = 5;
+const limit = 2;
 
 function formatDate(date) {
   return date.toISOString().split('T')[0];
