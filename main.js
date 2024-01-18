@@ -62,9 +62,18 @@ async function periodicTask() {
       }
     } catch (error) {
       console.error(`Error in periodicTask for ${ticker}:`, error);
+
+      // Check if the error is a 404 or other network error
+      if (error.response && error.response.status === 404) {
+        console.error(`Data not found for ${ticker}, continuing with next ticker`);
+      } else {
+        console.error(`Unhandled error for ${ticker}, stopping execution`);
+        break; // Optional: stop the loop if a non-404 error occurs
+      }
     }
   }
 }
+
 
 // app.get('/', (req, res) => {
 //   res.json({ message: 'Stock Analysis Scraper Running', status: 'active' });
